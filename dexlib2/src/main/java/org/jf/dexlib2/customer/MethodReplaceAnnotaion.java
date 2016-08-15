@@ -17,7 +17,7 @@ import java.util.Set;
 public class MethodReplaceAnnotaion
         extends BaseAnnotation
 {
-    private static final String ANNOTATION = "Lcom/jd/kepler/hotfix/andfix/annotation/MethodReplace;";
+    private static final String ANNOTATION = "Lcom/alipay/andfix/annotation/MethodReplace;";
     private Set<BaseAnnotationElement> mElements = new HashSet();
 
     public int getVisibility()
