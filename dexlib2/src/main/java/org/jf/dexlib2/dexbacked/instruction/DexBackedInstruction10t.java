@@ -45,4 +45,11 @@ public class DexBackedInstruction10t extends DexBackedInstruction implements Ins
     }
 
     @Override public int getCodeOffset() { return dexFile.readByte(instructionStart + 1); }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction10t)) {
+      return (super.equals(obj)) && (getCodeOffset() == ((DexBackedInstruction10t)obj).getCodeOffset());
+    }
+    return false;
+  }
 }

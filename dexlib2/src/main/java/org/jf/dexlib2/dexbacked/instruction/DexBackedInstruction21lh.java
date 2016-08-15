@@ -47,4 +47,23 @@ public class DexBackedInstruction21lh extends DexBackedInstruction implements In
     @Override public int getRegisterA() { return dexFile.readUbyte(instructionStart + 1); }
     @Override public long getWideLiteral() { return ((long)getHatLiteral()) << 48; }
     @Override public short getHatLiteral() { return (short)dexFile.readShort(instructionStart + 2); }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction21lh))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterA() == ((DexBackedInstruction21lh)obj)
+        .getRegisterA())) {
+        if (Long.compare(getWideLiteral(), 
+          ((DexBackedInstruction21lh)obj).getWideLiteral()) == 0) {
+          if (getHatLiteral() == ((DexBackedInstruction21lh)obj)
+            .getHatLiteral()) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

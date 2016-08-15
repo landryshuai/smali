@@ -78,4 +78,35 @@ public class DexBackedSparseSwitchPayload extends DexBackedInstruction implement
     }
 
     @Override public int getCodeUnits() { return 2 + elementCount*4; }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedSparseSwitchPayload))
+    {
+      if (super.equals(obj)) {
+        if ((elementsEquals(getSwitchElements(), ((DexBackedSparseSwitchPayload)obj).getSwitchElements())) && 
+          (getCodeUnits() == ((DexBackedSparseSwitchPayload)obj)
+          .getCodeUnits())) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return false;
+  }
+  
+  private boolean elementsEquals(List<? extends SwitchElement> a, List<? extends SwitchElement> b)
+  {
+    if (a.size() != b.size()) {
+      return false;
+    }
+    for (int i = 0; i < a.size(); i++)
+    {
+      SwitchElement ae = (SwitchElement)a.get(i);
+      SwitchElement be = (SwitchElement)b.get(i);
+      if ((ae.getKey() != be.getKey()) || (ae.getOffset() != be.getOffset())) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

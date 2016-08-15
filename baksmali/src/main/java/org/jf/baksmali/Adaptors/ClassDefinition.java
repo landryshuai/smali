@@ -28,11 +28,14 @@
 
 package org.jf.baksmali.Adaptors;
 
-import com.google.common.collect.Lists;
 import org.jf.baksmali.baksmaliOptions;
+import org.jf.dexlib2.customer.MethodReplaceAnnotaion;
+import org.jf.dexlib2.customer.diff.DiffInfo;
+import org.jf.dexlib2.customer.utils.TypeGenUtil;
 import org.jf.dexlib2.AccessFlags;
 import org.jf.dexlib2.dexbacked.DexBackedClassDef;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile.InvalidItemIndex;
+import org.jf.dexlib2.dexbacked.DexBackedMethod;
 import org.jf.dexlib2.iface.*;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
@@ -116,7 +119,7 @@ public class ClassDefinition {
     private void writeClass(IndentingWriter writer) throws IOException {
         writer.write(".class ");
         writeAccessFlags(writer);
-        writer.write(classDef.getType());
+        writer.write(TypeGenUtil.newType(this.classDef.getType()));
         writer.write('\n');
     }
 
@@ -246,38 +249,54 @@ public class ClassDefinition {
         }
     }
 
-    private Set<String> writeDirectMethods(IndentingWriter writer) throws IOException {
+    private Set<String> writeDirectMethods(IndentingWriter writer)
+            throws IOException
+    {
         boolean wroteHeader = false;
-        Set<String> writtenMethods = new HashSet<String>();
+        Set<String> writtenMethods = new HashSet();
 
+        Set<? extends Method> modifieds = null;
         Iterable<? extends Method> directMethods;
-        if (classDef instanceof DexBackedClassDef) {
-            directMethods = ((DexBackedClassDef)classDef).getDirectMethods(false);
-        } else {
-            directMethods = classDef.getDirectMethods();
+        if ((this.classDef instanceof DexBackedClassDef))
+        {
+            directMethods = ((DexBackedClassDef)this.classDef).getDirectMethods(false);
+            modifieds = DiffInfo.getInstance().getModifiedMethods();
         }
-
-        for (Method method: directMethods) {
-            if (!wroteHeader) {
+        else
+        {
+            directMethods = this.classDef.getDirectMethods();
+        }
+        for (Method method : directMethods)
+        {
+            if ((modifieds != null) && (modifieds.contains(method)))
+            {
+                MethodReplaceAnnotaion replaceAnnotaion = new MethodReplaceAnnotaion(
+                        method.getDefiningClass(), method.getName());
+                ((DexBackedMethod)method).setMethodReplace(replaceAnnotaion);
+            }
+            if (!wroteHeader)
+            {
                 writer.write("\n\n");
                 writer.write("# direct methods");
                 wroteHeader = true;
             }
-            writer.write('\n');
+            writer.write(10);
 
-            // TODO: check for method validation errors
             String methodString = ReferenceUtil.getMethodDescriptor(method, true);
 
             IndentingWriter methodWriter = writer;
-            if (!writtenMethods.add(methodString)) {
+            if (!writtenMethods.add(methodString))
+            {
                 writer.write("# duplicate method ignored\n");
                 methodWriter = new CommentingIndentingWriter(writer);
             }
-
             MethodImplementation methodImpl = method.getImplementation();
-            if (methodImpl == null) {
-                MethodDefinition.writeEmptyMethodTo(methodWriter, method, options);
-            } else {
+            if (methodImpl == null)
+            {
+                MethodDefinition.writeEmptyMethodTo(methodWriter, method, this.options);
+            }
+            else
+            {
                 MethodDefinition methodDefinition = new MethodDefinition(this, method, methodImpl);
                 methodDefinition.writeTo(methodWriter);
             }
@@ -285,44 +304,62 @@ public class ClassDefinition {
         return writtenMethods;
     }
 
-    private void writeVirtualMethods(IndentingWriter writer, Set<String> directMethods) throws IOException {
+    private void writeVirtualMethods(IndentingWriter writer, Set<String> directMethods)
+            throws IOException
+    {
         boolean wroteHeader = false;
-        Set<String> writtenMethods = new HashSet<String>();
+        Set<String> writtenMethods = new HashSet();
 
+        Set<? extends Method> modifieds = null;
         Iterable<? extends Method> virtualMethods;
-        if (classDef instanceof DexBackedClassDef) {
-            virtualMethods = ((DexBackedClassDef)classDef).getVirtualMethods(false);
-        } else {
-            virtualMethods = classDef.getVirtualMethods();
+        if ((this.classDef instanceof DexBackedClassDef))
+        {
+            virtualMethods = ((DexBackedClassDef)this.classDef).getVirtualMethods(false);
+            modifieds = DiffInfo.getInstance().getModifiedMethods();
         }
-
-        for (Method method: virtualMethods) {
-            if (!wroteHeader) {
+        else
+        {
+            virtualMethods = this.classDef.getVirtualMethods();
+        }
+        for (Method method : virtualMethods)
+        {
+            if ((modifieds != null) && (modifieds.contains(method)))
+            {
+                MethodReplaceAnnotaion replaceAnnotaion = new MethodReplaceAnnotaion(
+                        method.getDefiningClass(), method.getName());
+                ((DexBackedMethod)method).setMethodReplace(replaceAnnotaion);
+            }
+            if (!wroteHeader)
+            {
                 writer.write("\n\n");
                 writer.write("# virtual methods");
                 wroteHeader = true;
             }
-            writer.write('\n');
+            writer.write(10);
 
-            // TODO: check for method validation errors
             String methodString = ReferenceUtil.getMethodDescriptor(method, true);
 
             IndentingWriter methodWriter = writer;
-            if (!writtenMethods.add(methodString)) {
+            if (!writtenMethods.add(methodString))
+            {
                 writer.write("# duplicate method ignored\n");
                 methodWriter = new CommentingIndentingWriter(writer);
-            } else if (directMethods.contains(methodString)) {
-                writer.write("# There is both a direct and virtual method with this signature.\n" +
-                             "# You will need to rename one of these methods, including all references.\n");
-                System.err.println(String.format("Duplicate direct+virtual method found: %s->%s",
-                        classDef.getType(), methodString));
+            }
+            else if (directMethods.contains(methodString))
+            {
+                writer.write("# There is both a direct and virtual method with this signature.\n# You will need to rename one of these methods, including all references.\n");
+
+                System.err.println(String.format("Duplicate direct+virtual method found: %s->%s", new Object[] {
+                        this.classDef.getType(), methodString }));
                 System.err.println("You will need to rename one of these methods, including all references.");
             }
-
             MethodImplementation methodImpl = method.getImplementation();
-            if (methodImpl == null) {
-                MethodDefinition.writeEmptyMethodTo(methodWriter, method, options);
-            } else {
+            if (methodImpl == null)
+            {
+                MethodDefinition.writeEmptyMethodTo(methodWriter, method, this.options);
+            }
+            else
+            {
                 MethodDefinition methodDefinition = new MethodDefinition(this, method, methodImpl);
                 methodDefinition.writeTo(methodWriter);
             }

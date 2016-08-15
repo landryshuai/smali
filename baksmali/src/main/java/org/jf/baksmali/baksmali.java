@@ -35,6 +35,7 @@ import com.google.common.collect.Ordering;
 import org.jf.baksmali.Adaptors.ClassDefinition;
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.CustomInlineMethodResolver;
+import org.jf.dexlib2.customer.utils.TypeGenUtil;
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.util.SyntheticAccessorResolver;
@@ -173,72 +174,74 @@ public class baksmali {
         return !errorOccurred;
     }
 
-    private static boolean disassembleClass(ClassDef classDef, ClassFileNameHandler fileNameHandler,
-                                            baksmaliOptions options) {
-        /**
-         * The path for the disassembly file is based on the package name
-         * The class descriptor will look something like:
-         * Ljava/lang/Object;
-         * Where the there is leading 'L' and a trailing ';', and the parts of the
-         * package name are separated by '/'
-         */
-        String classDescriptor = classDef.getType();
-
-        //validate that the descriptor is formatted like we expect
-        if (classDescriptor.charAt(0) != 'L' ||
-                classDescriptor.charAt(classDescriptor.length()-1) != ';') {
+    public static boolean disassembleClass(ClassDef classDef, ClassFileNameHandler fileNameHandler, baksmaliOptions options)
+    {
+        String classDescriptor = TypeGenUtil.newType(classDef.getType());
+        if ((classDescriptor.charAt(0) != 'L') ||
+                (classDescriptor.charAt(classDescriptor.length() - 1) != ';'))
+        {
             System.err.println("Unrecognized class descriptor - " + classDescriptor + " - skipping class");
             return false;
         }
-
         File smaliFile = fileNameHandler.getUniqueFilenameForClass(classDescriptor);
 
-        //create and initialize the top level string template
         ClassDefinition classDefinition = new ClassDefinition(options, classDef);
 
-        //write the disassembly
         Writer writer = null;
         try
         {
             File smaliParent = smaliFile.getParentFile();
-            if (!smaliParent.exists()) {
-                if (!smaliParent.mkdirs()) {
-                    // check again, it's likely it was created in a different thread
-                    if (!smaliParent.exists()) {
-                        System.err.println("Unable to create directory " + smaliParent.toString() + " - skipping class");
-                        return false;
-                    }
-                }
-            }
-
-            if (!smaliFile.exists()){
-                if (!smaliFile.createNewFile()) {
-                    System.err.println("Unable to create file " + smaliFile.toString() + " - skipping class");
+            if ((!smaliParent.exists()) &&
+                    (!smaliParent.mkdirs())) {
+                if (!smaliParent.exists())
+                {
+                    System.err.println("Unable to create directory " + smaliParent.toString() + " - skipping class");
                     return false;
                 }
             }
-
+            if ((!smaliFile.exists()) &&
+                    (!smaliFile.createNewFile()))
+            {
+                System.err.println("Unable to create file " + smaliFile.toString() + " - skipping class");
+                return false;
+            }
             BufferedWriter bufWriter = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(smaliFile), "UTF8"));
 
             writer = new IndentingWriter(bufWriter);
             classDefinition.writeTo((IndentingWriter)writer);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             System.err.println("\n\nError occurred while disassembling class " + classDescriptor.replace('/', '.') + " - skipping class");
             ex.printStackTrace();
-            // noinspection ResultOfMethodCallIgnored
+
             smaliFile.delete();
             return false;
         }
         finally
         {
             if (writer != null) {
-                try {
+                try
+                {
                     writer.close();
-                } catch (Throwable ex) {
+                }
+                catch (Throwable ex)
+                {
                     System.err.println("\n\nError occurred while closing file " + smaliFile.toString());
                     ex.printStackTrace();
                 }
+            }
+        }
+        if (writer != null) {
+            try
+            {
+                writer.close();
+            }
+            catch (Throwable ex)
+            {
+                System.err.println("\n\nError occurred while closing file " + smaliFile.toString());
+                ex.printStackTrace();
             }
         }
         return true;

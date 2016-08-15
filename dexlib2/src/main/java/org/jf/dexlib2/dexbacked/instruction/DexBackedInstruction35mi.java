@@ -78,4 +78,35 @@ public class DexBackedInstruction35mi extends DexBackedInstruction implements In
     public int getInlineIndex() {
         return dexFile.readUshort(instructionStart + 2);
     }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction35mi))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterCount() == ((DexBackedInstruction35mi)obj)
+        .getRegisterCount())) {
+        if (getRegisterC() == ((DexBackedInstruction35mi)obj)
+          .getRegisterC()) {
+          if (getRegisterD() == ((DexBackedInstruction35mi)obj)
+            .getRegisterD()) {
+            if (getRegisterE() == ((DexBackedInstruction35mi)obj)
+              .getRegisterE()) {
+              if (getRegisterF() == ((DexBackedInstruction35mi)obj)
+                .getRegisterF()) {
+                if (getRegisterG() == ((DexBackedInstruction35mi)obj)
+                  .getRegisterG()) {
+                  if (getInlineIndex() == ((DexBackedInstruction35mi)obj)
+                    .getInlineIndex()) {
+                    return true;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

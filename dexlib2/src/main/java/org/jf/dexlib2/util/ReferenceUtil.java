@@ -31,6 +31,10 @@
 
 package org.jf.dexlib2.util;
 
+import org.jf.dexlib2.customer.diff.DiffInfo;
+import org.jf.dexlib2.customer.utils.TypeGenUtil;
+import org.jf.dexlib2.dexbacked.DexBackedClassDef;
+import org.jf.dexlib2.dexbacked.DexBackedField;
 import org.jf.dexlib2.iface.reference.*;
 import org.jf.util.StringUtils;
 
@@ -46,13 +50,20 @@ public final class ReferenceUtil {
 
     public static String getMethodDescriptor(MethodReference methodReference, boolean useImplicitReference) {
         StringBuilder sb = new StringBuilder();
-        if (!useImplicitReference) {
-            sb.append(methodReference.getDefiningClass());
+        String clazz;
+        if (!useImplicitReference)
+        {
+            DiffInfo info = DiffInfo.getInstance();
+            clazz = methodReference.getDefiningClass();
+            if (info.getModifiedClasses(clazz) != null) {
+                clazz = TypeGenUtil.newType(clazz);
+            }
+            sb.append(clazz);
             sb.append("->");
         }
         sb.append(methodReference.getName());
         sb.append('(');
-        for (CharSequence paramType: methodReference.getParameterTypes()) {
+        for (CharSequence paramType : methodReference.getParameterTypes()) {
             sb.append(paramType);
         }
         sb.append(')');
@@ -67,7 +78,13 @@ public final class ReferenceUtil {
     public static void writeMethodDescriptor(Writer writer, MethodReference methodReference,
                                              boolean useImplicitReference) throws IOException {
         if (!useImplicitReference) {
-            writer.write(methodReference.getDefiningClass());
+            String clazz;
+            DiffInfo info = DiffInfo.getInstance();
+            clazz = methodReference.getDefiningClass();
+            if (info.getModifiedClasses(clazz) != null) {
+                clazz = TypeGenUtil.newType(clazz);
+            }
+            writer.write(clazz);
             writer.write("->");
         }
         writer.write(methodReference.getName());
@@ -86,7 +103,13 @@ public final class ReferenceUtil {
     public static String getFieldDescriptor(FieldReference fieldReference, boolean useImplicitReference) {
         StringBuilder sb = new StringBuilder();
         if (!useImplicitReference) {
-            sb.append(fieldReference.getDefiningClass());
+            DiffInfo info = DiffInfo.getInstance();
+            String clazz = fieldReference.getDefiningClass();
+            if ((info.getModifiedClasses(clazz) != null) &&
+                    (!isStaticFiled(info.getModifiedClasses(clazz), fieldReference))) {
+                clazz = TypeGenUtil.newType(clazz);
+            }
+            sb.append(clazz);
             sb.append("->");
         }
         sb.append(fieldReference.getName());
@@ -110,7 +133,13 @@ public final class ReferenceUtil {
     public static void writeFieldDescriptor(Writer writer, FieldReference fieldReference,
                                             boolean implicitReference) throws IOException {
         if (!implicitReference) {
-            writer.write(fieldReference.getDefiningClass());
+            DiffInfo info = DiffInfo.getInstance();
+            String clazz = fieldReference.getDefiningClass();
+            if ((info.getModifiedClasses(clazz) != null) &&
+                    (!isStaticFiled(info.getModifiedClasses(clazz), fieldReference))) {
+                clazz = TypeGenUtil.newType(clazz);
+            }
+            writer.write(clazz);
             writer.write("->");
         }
         writer.write(fieldReference.getName());
@@ -143,6 +172,14 @@ public final class ReferenceUtil {
         }
         return null;
     }
-
+    private static boolean isStaticFiled(DexBackedClassDef classDef, FieldReference reference)
+    {
+        for (DexBackedField field : classDef.getStaticFields()) {
+            if (field.equals(reference)) {
+                return true;
+            }
+        }
+        return false;
+    }
     private ReferenceUtil() {}
 }

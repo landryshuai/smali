@@ -57,4 +57,23 @@ public class DexBackedInstruction3rmi extends DexBackedInstruction implements In
     public int getInlineIndex() {
         return dexFile.readUshort(instructionStart + 2);
     }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction3rmi))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterCount() == ((DexBackedInstruction3rmi)obj)
+        .getRegisterCount())) {
+        if (getStartRegister() == ((DexBackedInstruction3rmi)obj)
+          .getStartRegister()) {
+          if (getInlineIndex() == ((DexBackedInstruction3rmi)obj)
+            .getInlineIndex()) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

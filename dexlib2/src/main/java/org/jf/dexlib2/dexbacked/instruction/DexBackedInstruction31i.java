@@ -47,4 +47,20 @@ public class DexBackedInstruction31i extends DexBackedInstruction implements Ins
     @Override public int getRegisterA() { return dexFile.readUbyte(instructionStart + 1); }
     @Override public int getNarrowLiteral() { return dexFile.readInt(instructionStart + 2); }
     @Override public long getWideLiteral() { return getNarrowLiteral(); }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction31i))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterA() == ((DexBackedInstruction31i)obj)
+        .getRegisterA())) {
+        if (getNarrowLiteral() == 
+          ((DexBackedInstruction31i)obj).getNarrowLiteral()) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

@@ -48,4 +48,26 @@ public class DexBackedInstruction21ih extends DexBackedInstruction implements In
     @Override public int getNarrowLiteral() { return getHatLiteral() << 16; }
     @Override public long getWideLiteral() { return getNarrowLiteral(); }
     @Override public short getHatLiteral() { return (short)dexFile.readShort(instructionStart + 2); }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction21ih))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterA() == ((DexBackedInstruction21ih)obj)
+        .getRegisterA())) {
+        if (getNarrowLiteral() == ((DexBackedInstruction21ih)obj)
+          .getNarrowLiteral()) {
+          if (Long.compare(getWideLiteral(), 
+            ((DexBackedInstruction21ih)obj).getWideLiteral()) == 0) {
+            if (getHatLiteral() == ((DexBackedInstruction21ih)obj)
+              .getHatLiteral()) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

@@ -79,5 +79,32 @@ public class DexBackedInstruction25x extends DexBackedInstruction implements Ins
     public int getRegisterParameterG() {
         return NibbleUtils.extractLowUnsignedNibble(dexFile.readUbyte(instructionStart + 1));
     }
-
+public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction25x))
+    {
+      if ((super.equals(obj)) && 
+        (getParameterRegisterCount() == ((DexBackedInstruction25x)obj)
+        .getParameterRegisterCount())) {
+        if (getRegisterFixedC() == ((DexBackedInstruction25x)obj)
+          .getRegisterFixedC()) {
+          if (getRegisterParameterD() == ((DexBackedInstruction25x)obj)
+            .getRegisterParameterD()) {
+            if (getRegisterParameterE() == ((DexBackedInstruction25x)obj)
+              .getRegisterParameterE()) {
+              if (getRegisterParameterF() == ((DexBackedInstruction25x)obj)
+                .getRegisterParameterF()) {
+                if (getRegisterParameterG() == ((DexBackedInstruction25x)obj)
+                  .getRegisterParameterG()) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

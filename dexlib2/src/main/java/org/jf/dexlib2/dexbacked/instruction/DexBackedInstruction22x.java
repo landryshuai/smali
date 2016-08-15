@@ -46,4 +46,20 @@ public class DexBackedInstruction22x extends DexBackedInstruction implements Ins
 
     @Override public int getRegisterA() { return dexFile.readUbyte(instructionStart + 1); }
     @Override public int getRegisterB() { return dexFile.readUshort(instructionStart + 2); }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction22x))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterA() == ((DexBackedInstruction22x)obj)
+        .getRegisterA())) {
+        if (getRegisterB() == ((DexBackedInstruction22x)obj)
+          .getRegisterB()) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

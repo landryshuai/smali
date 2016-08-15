@@ -80,4 +80,35 @@ public class DexBackedPackedSwitchPayload extends DexBackedInstruction implement
     }
 
     @Override public int getCodeUnits() { return 4 + elementCount*2; }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedPackedSwitchPayload))
+    {
+      if (super.equals(obj)) {
+        if ((elementsEquals(getSwitchElements(), ((DexBackedPackedSwitchPayload)obj).getSwitchElements())) && 
+          (getCodeUnits() == ((DexBackedPackedSwitchPayload)obj)
+          .getCodeUnits())) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return false;
+  }
+  
+  private boolean elementsEquals(List<? extends SwitchElement> a, List<? extends SwitchElement> b)
+  {
+    if (a.size() != b.size()) {
+      return false;
+    }
+    for (int i = 0; i < a.size(); i++)
+    {
+      SwitchElement ae = (SwitchElement)a.get(i);
+      SwitchElement be = (SwitchElement)b.get(i);
+      if ((ae.getKey() != be.getKey()) || (ae.getOffset() != be.getOffset())) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

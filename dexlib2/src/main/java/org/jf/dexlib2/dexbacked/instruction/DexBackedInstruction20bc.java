@@ -61,4 +61,22 @@ public class DexBackedInstruction20bc extends DexBackedInstruction implements In
         ReferenceType.validateReferenceType(referenceType);
         return referenceType;
     }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction20bc))
+    {
+      if ((super.equals(obj)) && 
+        (getVerificationError() == ((DexBackedInstruction20bc)obj)
+        .getVerificationError())) {
+        if (getReferenceType() == ((DexBackedInstruction20bc)obj)
+          .getReferenceType()) {
+          if (getReference().equals(((DexBackedInstruction20bc)obj).getReference())) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

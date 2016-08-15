@@ -144,4 +144,55 @@ public class DexBackedMethodImplementation implements MethodImplementation {
     public Iterator<String> getParameterNames(@Nullable DexReader dexReader) {
         return getDebugInfo().getParameterNames(dexReader);
     }
+    public boolean equals(Object obj)
+    {
+      if ((obj instanceof DexBackedMethodImplementation))
+      {
+        if (getRegisterCount() == ((DexBackedMethodImplementation)obj)
+          .getRegisterCount()) {
+          if (equalTryBlocks(getTryBlocks(), ((DexBackedMethodImplementation)obj).getTryBlocks())) {
+            if (equalParameterNames(getInstructions(), ((DexBackedMethodImplementation)obj).getInstructions())) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+      return false;
+    }
+    
+    private boolean equalTryBlocks(List<? extends DexBackedTryBlock> a, List<? extends DexBackedTryBlock> b)
+    {
+      if (a.size() != b.size()) {
+        return false;
+      }
+      for (int i = 0; i < a.size(); i++)
+      {
+        DexBackedTryBlock at = (DexBackedTryBlock)a.get(i);
+        DexBackedTryBlock bt = (DexBackedTryBlock)b.get(i);
+        if (!at.equals(bt)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    
+    private boolean equalParameterNames(Iterable<? extends Instruction> ai, Iterable<? extends Instruction> bi)
+    {
+      ImmutableList<? extends Instruction> a = ImmutableList.copyOf(ai);
+      ImmutableList<? extends Instruction> b = ImmutableList.copyOf(bi);
+      if (a.size() != b.size()) {
+        return false;
+      }
+      for (int i = 0; i < a.size(); i++)
+      {
+        Instruction at = (Instruction)a.get(i);
+        Instruction bt = (Instruction)b.get(i);
+        if (!at.equals(bt)) {
+          return false;
+        }
+      }
+      return true;
+    }
+  
 }

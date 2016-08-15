@@ -54,4 +54,20 @@ public class DexBackedInstruction12x extends DexBackedInstruction implements Ins
     public int getRegisterB() {
         return NibbleUtils.extractHighUnsignedNibble(dexFile.readByte(instructionStart + 1));
     }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction12x))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterA() == ((DexBackedInstruction12x)obj)
+        .getRegisterA())) {
+        if (getRegisterB() == ((DexBackedInstruction12x)obj)
+          .getRegisterB()) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

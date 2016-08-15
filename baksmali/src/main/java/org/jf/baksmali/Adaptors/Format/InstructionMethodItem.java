@@ -33,6 +33,8 @@ import org.jf.baksmali.Adaptors.MethodDefinition.InvalidSwitchPayload;
 import org.jf.baksmali.Adaptors.MethodItem;
 import org.jf.baksmali.Renderers.LongRenderer;
 import org.jf.baksmali.baksmaliOptions;
+import org.jf.dexlib2.customer.diff.DiffInfo;
+import org.jf.dexlib2.customer.utils.TypeGenUtil;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.ReferenceType;
 import org.jf.dexlib2.VerificationError;
@@ -109,6 +111,13 @@ public class InstructionMethodItem<T extends Instruction> extends MethodItem {
                 }
 
                 referenceString = ReferenceUtil.getReferenceString(reference, classContext);
+                if (this.methodDef.method.getName().equals("<clinit>"))
+                {
+                    String clazz = this.methodDef.method.getDefiningClass();
+                    if (DiffInfo.getInstance().getModifiedClasses(clazz) != null) {
+                        referenceString = referenceString.replace(clazz, TypeGenUtil.newType(clazz));
+                    }
+                }
                 assert referenceString != null;
             } catch (InvalidItemIndex ex) {
                 writer.write("#");

@@ -78,4 +78,35 @@ public class DexBackedInstruction35ms extends DexBackedInstruction implements In
     public int getVtableIndex() {
         return dexFile.readUshort(instructionStart + 2);
     }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction35ms))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterCount() == ((DexBackedInstruction35ms)obj)
+        .getRegisterCount())) {
+        if (getRegisterC() == ((DexBackedInstruction35ms)obj)
+          .getRegisterC()) {
+          if (getRegisterD() == ((DexBackedInstruction35ms)obj)
+            .getRegisterD()) {
+            if (getRegisterE() == ((DexBackedInstruction35ms)obj)
+              .getRegisterE()) {
+              if (getRegisterF() == ((DexBackedInstruction35ms)obj)
+                .getRegisterF()) {
+                if (getRegisterG() == ((DexBackedInstruction35ms)obj)
+                  .getRegisterG()) {
+                  if (getVtableIndex() == ((DexBackedInstruction35ms)obj)
+                    .getVtableIndex()) {
+                    return true;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

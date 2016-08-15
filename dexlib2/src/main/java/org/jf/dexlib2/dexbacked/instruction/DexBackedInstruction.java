@@ -151,4 +151,11 @@ public abstract class DexBackedInstruction implements Instruction {
                 throw new ExceptionWithContext("Unexpected opcode format: %s", opcode.format.toString());
         }
     }
+    public boolean equals(Object obj)
+    {
+        if ((obj instanceof DexBackedInstruction)) {
+            return getOpcode() == ((DexBackedInstruction)obj).getOpcode();
+        }
+        return false;
+    }
 }

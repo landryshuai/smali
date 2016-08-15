@@ -33,6 +33,7 @@ package org.jf.dexlib2.dexbacked;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import org.jf.dexlib2.base.BaseAnnotation;
 import org.jf.dexlib2.base.reference.BaseMethodReference;
 import org.jf.dexlib2.dexbacked.raw.MethodIdItem;
 import org.jf.dexlib2.dexbacked.raw.ProtoIdItem;
@@ -47,6 +48,7 @@ import org.jf.util.AbstractForwardSequentialList;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -174,10 +176,16 @@ public class DexBackedMethod extends BaseMethodReference implements Method {
         return ImmutableList.of();
     }
 
+    //change by shuaijiman
     @Nonnull
     @Override
     public Set<? extends Annotation> getAnnotations() {
-        return AnnotationsDirectory.getAnnotations(dexFile, methodAnnotationSetOffset);
+        Set<BaseAnnotation> ret = new HashSet();
+        ret.addAll(AnnotationsDirectory.getAnnotations(this.dexFile, this.methodAnnotationSetOffset));
+        if (this.methodReplace != null) {
+            ret.add(this.methodReplace);
+        }
+        return ret;
     }
 
     @Nullable
@@ -223,5 +231,11 @@ public class DexBackedMethod extends BaseMethodReference implements Method {
             reader.skipUleb128();
             reader.skipUleb128();
         }
+    }
+    //add by shuaijiman
+    private BaseAnnotation methodReplace;
+    public void setMethodReplace(BaseAnnotation annotation)
+    {
+        this.methodReplace = annotation;
     }
 }

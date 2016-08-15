@@ -56,4 +56,23 @@ public class DexBackedInstruction11n extends DexBackedInstruction implements Ins
     }
 
     @Override public long getWideLiteral() { return getNarrowLiteral(); }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction11n))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterA() == ((DexBackedInstruction11n)obj)
+        .getRegisterA())) {
+        if (getNarrowLiteral() == ((DexBackedInstruction11n)obj)
+          .getNarrowLiteral()) {
+          if (Long.compare(getWideLiteral(), 
+            ((DexBackedInstruction11n)obj).getWideLiteral()) == 0) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

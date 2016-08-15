@@ -57,4 +57,23 @@ public class DexBackedInstruction3rms extends DexBackedInstruction implements In
     public int getVtableIndex() {
         return dexFile.readUshort(instructionStart + 2);
     }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction3rms))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterCount() == ((DexBackedInstruction3rms)obj)
+        .getRegisterCount())) {
+        if (getStartRegister() == ((DexBackedInstruction3rms)obj)
+          .getStartRegister()) {
+          if (getVtableIndex() == ((DexBackedInstruction3rms)obj)
+            .getVtableIndex()) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

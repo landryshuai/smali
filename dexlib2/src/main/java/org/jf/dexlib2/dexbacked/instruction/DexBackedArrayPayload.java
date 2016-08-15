@@ -114,4 +114,39 @@ public class DexBackedArrayPayload extends DexBackedInstruction implements Array
     public int getCodeUnits() {
         return 4 + (elementWidth*elementCount + 1) / 2;
     }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedArrayPayload))
+    {
+      if (super.equals(obj)) {
+        if (elementsEquals(getArrayElements(), ((DexBackedArrayPayload)obj).getArrayElements())) {
+          if (getElementWidth() == ((DexBackedArrayPayload)obj)
+            .getElementWidth()) {
+            if (getCodeUnits() == ((DexBackedArrayPayload)obj)
+              .getCodeUnits()) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
+  
+  private boolean elementsEquals(List<Number> a, List<Number> b)
+  {
+    if (a.size() != b.size()) {
+      return false;
+    }
+    for (int i = 0; i < a.size(); i++)
+    {
+      Number ae = (Number)a.get(i);
+      Number be = (Number)b.get(i);
+      if (Long.compare(ae.longValue(), be.longValue()) != 0) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

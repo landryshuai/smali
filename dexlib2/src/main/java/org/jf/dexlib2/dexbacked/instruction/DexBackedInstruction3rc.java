@@ -66,5 +66,23 @@ public class DexBackedInstruction3rc extends DexBackedInstruction implements Ins
     public int getReferenceType() {
         return opcode.referenceType;
     }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction3rc))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterCount() == ((DexBackedInstruction3rc)obj)
+        .getRegisterCount())) {
+        if (getStartRegister() == ((DexBackedInstruction3rc)obj)
+          .getStartRegister()) {
+          if (getReference().equals(((DexBackedInstruction3rc)obj).getReference())) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }
 

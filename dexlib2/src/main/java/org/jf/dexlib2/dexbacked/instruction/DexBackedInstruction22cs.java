@@ -59,4 +59,23 @@ public class DexBackedInstruction22cs extends DexBackedInstruction implements In
     public int getFieldOffset() {
         return dexFile.readUshort(instructionStart + 2);
     }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction22cs))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterA() == ((DexBackedInstruction22cs)obj)
+        .getRegisterA())) {
+        if (getFieldOffset() == ((DexBackedInstruction22cs)obj)
+          .getFieldOffset()) {
+          if (getRegisterB() == ((DexBackedInstruction22cs)obj)
+            .getRegisterB()) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

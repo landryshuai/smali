@@ -46,4 +46,20 @@ public class DexBackedInstruction21t extends DexBackedInstruction implements Ins
 
     @Override public int getRegisterA() { return dexFile.readUbyte(instructionStart + 1); }
     @Override public int getCodeOffset() { return dexFile.readShort(instructionStart + 2); }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction21t))
+    {
+      if ((super.equals(obj)) && 
+        (getRegisterA() == ((DexBackedInstruction21t)obj)
+        .getRegisterA())) {
+        if (getCodeOffset() == ((DexBackedInstruction21t)obj)
+          .getCodeOffset()) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return false;
+  }
 }

@@ -45,4 +45,13 @@ public class DexBackedInstruction11x extends DexBackedInstruction implements Ins
     }
 
     @Override public int getRegisterA() { return dexFile.readUbyte(instructionStart + 1); }
+    public boolean equals(Object obj)
+  {
+    if ((obj instanceof DexBackedInstruction11x)) {
+      return (super.equals(obj)) && 
+        (getRegisterA() == ((DexBackedInstruction11x)obj)
+        .getRegisterA());
+    }
+    return false;
+  }
 }
